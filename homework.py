@@ -135,7 +135,10 @@ class Swimming(Training):
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
     type_workout = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
-    return type_workout[workout_type](*data)
+    if workout_type in type_workout:
+        return type_workout[workout_type](*data)
+    else:
+        raise ValueError
 
 
 def main(training: Training) -> None:
@@ -152,8 +155,4 @@ if __name__ == '__main__':
 
     for workout_type, data in packages:
         training = read_package(workout_type, data)
-        type_workout = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
-        if workout_type in type_workout:
-            main(training)
-        else:
-            raise ValueError
+        main(training)
