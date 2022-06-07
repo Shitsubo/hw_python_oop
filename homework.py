@@ -47,7 +47,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise
+        raise ValueError
 
     def show_training_info(self) -> InfoMessage:
         return InfoMessage(self.__class__.__name__,
@@ -139,7 +139,7 @@ def read_package(workout_type: str, data: list) -> Training:
     if 'SWM' in type_workout or 'RUN' in type_workout or 'WLK' in type_workout:
         return training
     else:
-        raise
+        raise ValueError
 
 
 def main(training: Training) -> None:
