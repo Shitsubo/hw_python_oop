@@ -139,7 +139,7 @@ def read_package(workout_type: str, data: list) -> Training:
     if 'SWM' in type_workout or 'RUN' in type_workout or 'WLK' in type_workout:
         return training
     else:
-        raise ValueError
+        raise KeyError
 
 
 def main(training: Training) -> None:
