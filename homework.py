@@ -1,32 +1,31 @@
+from dataclasses import dataclass, asdict
+
+
+@dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
 
-    def __init__(self,
-                 training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self.distance = distance
-        self.speed = speed
-        self.calories = calories
+    message = ('Тип тренировки: {training_type}; '
+               'Длительность: {duration:0.3f} ч.; '
+               'Дистанция: {distance:0.3f} км; '
+               'Ср. скорость: {speed:0.3f} км/ч; '
+               'Потрачено ккал: {calories:0.3f}.'
+               )
 
-    def get_message(self):
-        message = (f'Тип тренировки: {self.training_type}; '
-                   f'Длительность: {self.duration:.3f} ч.; '
-                   f'Дистанция: {self.distance:.3f} км; '
-                   f'Ср. скорость: {self.speed:.3f} км/ч; '
-                   f'Потрачено ккал: {self.calories:.3f}.'
-                   )
-        return message
+    def get_message(self: dict) -> str:
+        return self.message.format(**asdict(self))
 
 
 class Training:
     """Базовый класс тренировки."""
     M_IN_KM: int = 1000
     LEN_STEP: float = 0.65
+    MIN_IN_HOUR: int = 60
 
     def __init__(self,
                  action: int,
@@ -48,7 +47,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise Error
 
     def show_training_info(self) -> InfoMessage:
         return InfoMessage(self.__class__.__name__,
@@ -78,7 +77,8 @@ class Running(Training):
         return (calories1
                 * self.weight
                 / self.M_IN_KM
-                * self.duration * 60)
+                * self.duration
+                * self.MIN_IN_HOUR)
 
 
 class SportsWalking(Training):
@@ -100,7 +100,7 @@ class SportsWalking(Training):
                      * self.weight
                      + (self.get_mean_speed() ** 2 // self.height)
                      * self.coeff_calorie_2 * self.weight)
-        return calories1 * self.duration * 60
+        return calories1 * self.duration * self.MIN_IN_HOUR
 
 
 class Swimming(Training):
@@ -134,12 +134,12 @@ class Swimming(Training):
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    if workout_type == 'SWM':
-        return Swimming(*data)
-    elif workout_type == 'RUN':
-        return Running(*data)
-    elif workout_type == 'WLK':
-        return SportsWalking(*data)
+    type_workout = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
+    training = type_workout[workout_type](*data)
+    if 'SWM' in type_workout or 'RUN' in type_workout or 'WLK' in type_workout:
+        return training
+    else:
+        raise EROR
 
 
 def main(training: Training) -> None:
