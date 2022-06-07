@@ -47,7 +47,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise ValueError
+        raise NotImplementedError
 
     def show_training_info(self) -> InfoMessage:
         return InfoMessage(self.__class__.__name__,
@@ -136,10 +136,10 @@ def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
     type_workout = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
     training = type_workout[workout_type](*data)
-    if 'SWM' in type_workout or 'RUN' in type_workout or 'WLK' in type_workout:
+    if workout_type in type_workout:
         return training
     else:
-        raise KeyError
+        raise ValueError
 
 
 def main(training: Training) -> None:
