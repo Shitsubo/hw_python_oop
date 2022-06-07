@@ -138,7 +138,6 @@ def read_package(workout_type: str, data: list) -> Training:
     return type_workout[workout_type](*data)
 
 
-
 def main(training: Training) -> None:
     info = training.show_training_info()
     print(info.get_message())
@@ -158,4 +157,3 @@ if __name__ == '__main__':
             main(training)
         else:
             raise ValueError
-
